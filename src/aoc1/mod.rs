@@ -12,14 +12,12 @@ struct Context {
 }
 
 impl Context {
-    #[allow(dead_code)]
     pub fn new(path: &str) -> Self {
         Self {
             full_input: read_input(path).unwrap(),
         }
     }
 
-    #[allow(dead_code)]
     pub fn part2(&self) -> u32 {
         let digits = Context::get_digits_arr(&self.full_input);
         let string_digits: Vec<Vec<(usize, u32)>> = self
@@ -76,7 +74,6 @@ impl Context {
             .collect()
     }
 
-    #[allow(dead_code)]
     pub fn part1(&self) -> u32 {
         Context::get_digits_arr(&self.full_input)
             .iter()
