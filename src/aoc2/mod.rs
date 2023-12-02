@@ -1,5 +1,6 @@
 #[allow(dead_code)]
 use crate::utils::read_input;
+use std::cmp::max;
 use std::error::Error;
 
 #[derive(Debug, PartialEq)]
@@ -62,6 +63,10 @@ impl Set {
         let (or, og, ob) = (other.red.count, other.green.count, other.blue.count);
         sr <= or && sg <= og && sb <= ob
     }
+
+    pub fn get_counts_rgb(&self) -> (usize, usize, usize) {
+        (self.red.count, self.green.count, self.blue.count)
+    }
 }
 
 #[derive(Debug)]
@@ -72,6 +77,17 @@ struct Game {
 impl Game {
     pub fn new(input: Vec<Set>) -> Game {
         Game { sets: input }
+    }
+
+    pub fn get_min_needed(&self) -> usize {
+        let (mut r, mut g, mut b) = (0, 0, 0);
+        for set in &self.sets {
+            let (rt, gt, bt) = set.get_counts_rgb();
+            r = max(r, rt);
+            g = max(g, gt);
+            b = max(b, bt);
+        }
+        r * g * b
     }
 }
 
@@ -143,6 +159,13 @@ impl Context {
         }
         res
     }
+
+    pub fn part2(&self) -> usize {
+        self.parsed_input
+            .iter()
+            .map(|game| game.get_min_needed())
+            .sum()
+    }
 }
 
 #[cfg(test)]
@@ -163,15 +186,22 @@ mod aoc2 {
     }
 
     #[test]
+    fn example2() {
+        let context = Context::new("src/aoc2/example2");
+        println!("Example 2: {}", context.part2());
+    }
+
+    #[test]
     fn actual() {
         let context = Context::new("src/aoc2/input");
         println!(
-            "Example 1: {}",
+            "Part 1: {}",
             context.part1(Set::new(vec![
                 BallCount::new_init(Color::Red, 12),
                 BallCount::new_init(Color::Green, 13),
                 BallCount::new_init(Color::Blue, 14)
             ]))
-        )
+        );
+        println!("Part 2: {}", context.part2());
     }
 }
